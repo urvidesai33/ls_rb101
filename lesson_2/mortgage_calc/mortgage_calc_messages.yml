@@ -1,0 +1,15 @@
+welcome: |
+  Welcome to Mortgage Calculator! 
+  Please enter your name: 
+greeting: Hello  
+questions: To get started, please answer a few questions about your loan.
+valid_name: Please enter a valid name.
+loan_amount: What is your loan amount?
+valid_loan_amount: Please enter a valid loan amount.
+apr_percent: What is the Annual Percentage Rate (APR) for your loan (%)? 
+valid_apr: Please enter a valid APR %.
+loan_dur_years: What is the duration of your loan in years?
+valid_duration: Please enter a valid loan duration in years.
+again: Would you like to calculate another loan? (y/n)
+try_again: Enter 'y' to try again or 'n' to exit.
+thanks: Thank you for using the Mortgage Calculator. Have a nice day!
