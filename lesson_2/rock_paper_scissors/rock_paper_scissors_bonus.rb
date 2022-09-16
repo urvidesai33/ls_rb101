@@ -1,3 +1,4 @@
+system("clear")
 CHOICE_TABLE = { 'r' => 'rock',
                  'p' => "paper",
                  'sc' => "scissors",
@@ -79,6 +80,16 @@ abbreviations = <<-MSG
   l -> lizard
   MSG
 
+rules = <<-MSG
+  These are the rules:
+  Scissors beats Paper beats Rock
+  beats Lizard beats Spock beats Scissors
+  beats Lizard beats Paper beats Spock
+  beats Rock beats Scissors
+  MSG
+
+  prompt("Welcome Player!")
+  prompt(rules)
 loop do
   loop do
     prompt("Choose one: #{VALID_CHOICES.join(',')}:")
@@ -95,7 +106,7 @@ loop do
   prompt("You chose: #{choice}; Computer chose: #{computer_choice}")
   display_results(choice, computer_choice)
   update_score_card(choice, computer_choice, player_score, computer_score)
-  prompt("The score is You: #{player_score.size};\
+  prompt("Score: You: #{player_score.size};\
      Computer: #{computer_score.size}")
   break if grand_winner?(player_score, computer_score)
 end
