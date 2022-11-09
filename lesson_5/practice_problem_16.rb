@@ -13,6 +13,7 @@
 # It looks like this: "f65c57f6-a6aa-17a8-faa1-a67f2dc9fa91"
 
 # Write a method that returns one UUID when called with no parameters.
+sections = [8, 4, 4, 4, 12]
 
 def generate_uuid
   hex_letters = ('a'.."f")
