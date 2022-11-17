@@ -1,4 +1,4 @@
-require 'pry'
+
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -99,8 +99,6 @@ def player_places_piece!(brd)
 end
 
 def computer_places_piece!(brd)
-  p find_at_risk_square(brd, PLAYER_MARKER)
-  p find_at_risk_square(brd, COMPUTER_MARKER)
   # offensive play
   square = find_at_risk_square(brd, COMPUTER_MARKER).sample
   # defensive play
@@ -134,15 +132,6 @@ end
 
 def detect_winner(brd)
   WINNING_LINES.each do |line|
-    # if brd[line[0]] == PLAYER_MARKER &&
-    #    brd[line[1]] == PLAYER_MARKER &&
-    #    brd[line[2]] == PLAYER_MARKER
-    #   return "Player"
-    # elsif brd[line[0]] == COMPUTER_MARKER &&
-    #       brd[line[1]] == COMPUTER_MARKER &&
-    #       brd[line[2]] == COMPUTER_MARKER
-    #   return "Computer"
-    # end
     if brd.values_at(*line).count(PLAYER_MARKER) == 3
       return 'Player'
     elsif brd.values_at(*line).count(COMPUTER_MARKER) == 3
@@ -167,7 +156,6 @@ computer_score = []
 loop do
   board = initialize_board
   current_player = computer_picks_player
-  prompt "#{current_player} goes first!"
 
   loop do
     display_board(board)
@@ -175,20 +163,6 @@ loop do
     current_player = alternate_player(current_player)
     break if someone_won?(board) || board_full?(board)
   end
-
-    #  if player_1 == "Player"
-    #   player_places_piece!(board)
-    #  else
-    #   computer_places_piece!(board)
-    #  end
-    #  display_board(board)
-    # break if someone_won?(board) || board_full?(board)
-    #  if player_1 == "Player"
-    #    computer_places_piece!(board)
-    #  else
-    #   player_places_piece!(board)
-    #  end
-    # break if someone_won?(board) || board_full?(board)
 
   display_board(board)
   if someone_won?(board)
