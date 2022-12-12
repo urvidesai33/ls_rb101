@@ -71,6 +71,7 @@ def computer_picks_player
   ["Player", "Computer"].sample
 end
 
+
 def place_piece!(brd, player)
   if player == "Player"
     player_places_piece!(brd)
@@ -153,11 +154,11 @@ end
 player_score = []
 computer_score = []
 
-loop do
+loop do # this is the main loop
   board = initialize_board
   current_player = computer_picks_player
-
-  loop do
+  
+  loop do # this is the game play loop
     display_board(board)
     place_piece!(board, current_player)
     current_player = alternate_player(current_player)
