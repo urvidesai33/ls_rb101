@@ -39,14 +39,14 @@ def deal_cards(deck)
   hand
 end
 
-def player_turn(deck, hand)
+def player_turn(deck, hand, points)
   loop do
-    if busted?(hand)
+    if busted?(points)
       break
     end
     prompt "Do you want to 'hit' or 'stay'?"
     play = gets.chomp.downcase
-    if play == "stay" || busted?(hand)
+    if play == "stay" 
       break
     elsif play == 'hit'
       hit(deck, hand)
@@ -54,6 +54,7 @@ def player_turn(deck, hand)
     else
       prompt "Invalid command. Try again."
     end
+    points = calculate_points(hand)
   end
 end
 
@@ -62,7 +63,7 @@ def dealer_turn(deck, hand)
   loop do
     total = 0
     total = calculate_points(hand)
-    break if total >= DEALER_THRESHOLD || busted?(hand)
+    break if total >= DEALER_THRESHOLD || busted?(total)
     hit(deck, hand)
   end
 end
@@ -87,13 +88,13 @@ def calculate_points(hand)
   total_points
 end
 
-def busted?(hand)
-  calculate_points(hand) > BUST_THRESHOLD
+def busted?(points)
+  points > BUST_THRESHOLD
 end
 
-def no_busts?(hand1, hand2)
-  calculate_points(hand1) <= BUST_THRESHOLD &&
-    calculate_points(hand2) <= BUST_THRESHOLD
+def no_busts?(points1, points2)
+  points1 <= BUST_THRESHOLD &&
+    points2 <= BUST_THRESHOLD
 end
 
 def card_name(card)
@@ -131,6 +132,7 @@ def see_the_rules(rules)
   end
 end
 
+
 rules = <<-MSG
   Thank you for choosing to play Twenty One!
   
@@ -151,36 +153,68 @@ rules = <<-MSG
 prompt "Welcome to the game of Twenty One!"
 loop do
   see_the_rules(rules)
-  deck_of_cards = initialize_deck.shuffle
-  player_hand = deal_cards(deck_of_cards)
-  prompt "Player has: " + show_hand(player_hand)
-  dealer_hand = deal_cards(deck_of_cards)
-  prompt "Dealer has: #{card_name(dealer_hand[0])} and one other card."
-  player_turn(deck_of_cards, player_hand)
-  if busted?(player_hand)
-    prompt "Player busted! Dealer wins!"
-  else
-    dealer_turn(deck_of_cards, dealer_hand)
-    prompt "Dealer busted! Player wins!" if busted?(dealer_hand)
-  end
-
-  if no_busts?(player_hand, dealer_hand)
-    if calculate_points(player_hand) > calculate_points(dealer_hand)
-      prompt "Player wins!"
-    elsif calculate_points(player_hand) < calculate_points(dealer_hand)
-      prompt "Dealer wins!"
+  player_score = []
+  dealer_score = []
+  loop do
+    deck_of_cards = initialize_deck.shuffle
+    player_hand = deal_cards(deck_of_cards)
+    player_total = calculate_points(player_hand)
+    prompt "Player has: " + show_hand(player_hand)
+    dealer_hand = deal_cards(deck_of_cards)
+    dealer_total = calculate_points(dealer_hand)
+    prompt "Dealer has: #{card_name(dealer_hand[0])} and one other card."
+    player_turn(deck_of_cards, player_hand, player_total)
+    player_total = calculate_points(player_hand)
+    
+    if busted?(player_total)
+      prompt "Player busted! Dealer wins!"
+      dealer_score << 1
     else
-      prompt "It's a tie!"
+      dealer_turn(deck_of_cards, dealer_hand)
+      dealer_total = calculate_points(dealer_hand)
+      if busted?(dealer_total)
+        prompt "Dealer busted! Player wins!"
+        player_score << 1
+      end
     end
-  end
-  prompt "Player has: #{show_hand(player_hand)} "
-  prompt "Player has #{calculate_points(player_hand)} points"
-  prompt "Dealer has: #{show_hand(dealer_hand)} "
-  prompt "Dealer has #{calculate_points(dealer_hand)} points"
+    
 
-  prompt "Do you want to play again? (y/n)"
-  again = gets.chomp.downcase
-  break if again == 'n'
-  system("clear")
+    if no_busts?(player_total, dealer_total)
+      if player_total > dealer_total
+        prompt "Player wins this game!"
+        player_score << 1
+      elsif player_total < dealer_total
+        prompt "Dealer wins this game!"
+        dealer_score << 1
+      else
+        prompt "This game is a tie!"
+      end
+    end
+
+    prompt "Player has: #{show_hand(player_hand)} "
+    prompt "Player has #{player_total} points"
+    
+    prompt "Dealer has: #{show_hand(dealer_hand)} "
+    prompt "Dealer has #{dealer_total} points"
+
+    prompt "Player has won #{player_score.sum} games.
+      Dealer as won #{dealer_score.sum} games."
+    break if dealer_score.sum == 5 || player_score.sum == 5
+    prompt "Do you want to play again? (y/n)"
+    again = gets.chomp.downcase
+    break if again == 'n'
+    system("clear")
+    
+  end
+
+  
+    if player_score.sum == 5
+      prompt "Player is the ultimate winner!"
+      break
+    elsif dealer_score.sum == 5
+      prompt "Dealer is the ultimate winner!"
+      break
+    end
+    break
 end
 prompt "Thanks for playing Twenty One! Have a nice day."
